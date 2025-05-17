@@ -1,0 +1,31 @@
+name: Preparant per producció
+run-name: ${{ github.actor }} pujant l'aplicació a producció
+on: [push]
+
+jobs:
+  Pujar-a-produccio-amb-SCP:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtenint el codi del repositori
+        uses: actions/checkout@v4
+
+      - name: Desplegant a producció github
+        run: |
+          echo "${{ secrets.PROD_KEY }}" > ~/prod_key.pem
+          chmod 600 ~/prod_key.pem
+          cd ${{ github.workspace }}
+
+          # Verificamos que la carpeta Web existe
+          if [ -d "./Web" ]; then
+            echo "Action a producció" > ./Web/last_deploy1.txt
+            date >> ./Web/last_deploy.txt
+          else
+            echo " Carpeta ./Web no trobada"
+            ls -la
+            exit 1
+          fi
+
+          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./Web/* ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/home/a23marrojgon/web/a23marrojgon-githubsactions.dam.inspedralbes.cat/public_html/
+
+      - name: Mostrant l'estat del job
+        run: echo "L'estat es ${{ job.status }}"
