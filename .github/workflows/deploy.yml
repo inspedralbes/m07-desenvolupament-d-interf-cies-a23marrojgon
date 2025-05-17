@@ -1,0 +1,22 @@
+name: Preparant per producció
+run-name: ${{ github.actor }} pujant l'aplicació a producció
+on: [push]
+
+jobs:
+  Pujar-a-produccio-amb-SCP:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtenint el codi del repositori
+        uses: actions/checkout@v4
+
+      - name: Desplegant a producció github
+        run: |
+          echo "${{ secrets.PROD_KEY }}" > ~/prod_key.pem
+          chmod 600 ~/prod_key.pem
+          cd ${{ github.workspace }}
+          echo "Action a producció" > ./web/last_deploy1.txt
+          date >> ./web/last_deploy.txt
+          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./web/* ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/home/a23marrojgon/web/a23marrojgon-githubsactions.dam.inspedralbes.cat/public_html/
+
+      - name: Mostrant l'estat del job
+        run: echo "L'estat es ${{ job.status }}"
