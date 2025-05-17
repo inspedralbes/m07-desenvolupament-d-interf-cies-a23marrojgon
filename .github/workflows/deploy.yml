@@ -15,17 +15,17 @@ jobs:
           chmod 600 ~/prod_key.pem
           cd ${{ github.workspace }}
 
-          # Verificamos que la carpeta web existe
-          if [ -d "./web" ]; then
-            echo "Action a producció" > ./web/last_deploy1.txt
-            date >> ./web/last_deploy.txt
+          # Verificamos que la carpeta Web existe
+          if [ -d "./Web" ]; then
+            echo "Action a producció" > ./Web/last_deploy1.txt
+            date >> ./Web/last_deploy.txt
           else
-            echo " Carpeta ./web no trobada"
+            echo " Carpeta ./Web no trobada"
             ls -la
             exit 1
           fi
 
-          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./web/* ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/home/a23marrojgon/web/a23marrojgon-githubsactions.dam.inspedralbes.cat/public_html/
+          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./Web/* ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/home/a23marrojgon/web/a23marrojgon-githubsactions.dam.inspedralbes.cat/public_html/
 
       - name: Mostrant l'estat del job
         run: echo "L'estat es ${{ job.status }}"
