@@ -9,7 +9,7 @@ jobs:
       - name: Obtenint el codi del repositori
         uses: actions/checkout@v4
 
-           - name: Desplegant a producció github
+      - name: Desplegant a producció github
         run: |
           echo "${{ secrets.PROD_KEY }}" > ~/prod_key.pem
           chmod 600 ~/prod_key.pem
@@ -26,7 +26,6 @@ jobs:
           fi
 
           scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./web/* ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/home/a23marrojgon/web/a23marrojgon-githubsactions.dam.inspedralbes.cat/public_html/
-
 
       - name: Mostrant l'estat del job
         run: echo "L'estat es ${{ job.status }}"
